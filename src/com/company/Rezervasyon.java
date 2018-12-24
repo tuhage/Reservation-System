@@ -1,9 +1,9 @@
 package com.company;
 
-public class Rezevasyon {
+public class Rezervasyon {
     public Kullanici kok;
-    public Rezevasyon sonraki;
-    public Rezevasyon onceki;
+    public Rezervasyon sonraki;
+    public Rezervasyon onceki;
     public String yer_id;
     public String rezervasyon_zamani;
     public int enlem;
