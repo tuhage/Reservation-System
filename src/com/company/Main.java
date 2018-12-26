@@ -23,11 +23,14 @@ public class Main {
             kategorileri_al(st);
 
          br.close();
-         br = new BufferedReader(new FileReader(file));
-         st=br.readLine();
-        while ((st = br.readLine()) != null)
-            kullanicilari_al(st);
+//         br = new BufferedReader(new FileReader(file));
+//         st=br.readLine();
+//        while ((st = br.readLine()) != null)
+//            kullanicilari_al(st);
 
+        Kullanici k1=new Kullanici();
+        Kullanici k2=new Kullanici();
+        Kullanici k3=new Kullanici();
 
 
     }
@@ -92,9 +95,31 @@ public class Main {
 
     public static void kullaniciagac(String kullanici,String kategori){
 
+        System.out.println(kullanici+"  "+kategori);
 
 
+    }
+    public static Kullanici kullanicivarmi(String kullanici,Kullanici kok){
 
+
+        Kullanici temp=null;
+        if(kok.kullanici_adi.equals(kullanici)) return kok;
+
+
+        if(kok.sag!=null){
+        if(kok.sag.kullanici_adi.equals(kullanici))return kok.sag;
+            temp=kullanicivarmi(kullanici,kok.sag);
+            if(temp!=null)return temp;
+
+        }
+        if(kok.sol!=null){
+            if(kok.sol.kullanici_adi.equals(kullanici))return kok.sol;
+            temp=kullanicivarmi(kullanici,kok.sol);
+            if(temp!=null)return temp;
+
+        }
+
+        return null;
     }
 
     public static void kategoriagac(String kategori){
