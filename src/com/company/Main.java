@@ -8,9 +8,8 @@ import java.util.ArrayList;
 
 public class Main {
 
-    public final static Kategori kok = new Kategori();
-    public final static Kullanici kullanici_kok=new Kullanici();
-    public static Kategori kategori_gosterge;
+    public final static Kategori kategoriKOK = new Kategori();
+
 
     public static void main(String[] args) throws IOException {
 
@@ -23,14 +22,15 @@ public class Main {
             kategorileri_al(st);
 
          br.close();
-//         br = new BufferedReader(new FileReader(file));
-//         st=br.readLine();
-//        while ((st = br.readLine()) != null)
-//            kullanicilari_al(st);
 
-        Kullanici k1=new Kullanici();
-        Kullanici k2=new Kullanici();
-        Kullanici k3=new Kullanici();
+
+         br = new BufferedReader(new FileReader(file));
+         st=br.readLine();
+         while ((st = br.readLine()) != null)
+           kullanicilari_al(st);
+
+
+kullanicilariYazdir(kategorivarmi("Airport",kategoriKOK).kullanicikok);
 
 
     }
@@ -72,15 +72,13 @@ public class Main {
 
     public static void kategorileri_al(String satir){
 
-        int k=0;
-        int kategori=0;
+
         String temp="";
         for (int i = 0; i <satir.length() ; i++) {
 
             if(satir.charAt(i)==','){
 
                     temp="";
-                    k++;
                 continue;
             }
 
@@ -95,14 +93,117 @@ public class Main {
 
     public static void kullaniciagac(String kullanici,String kategori){
 
-        System.out.println(kullanici+"  "+kategori);
+        Kategori tempkategori=kategorivarmi(kategori,kategoriKOK);
+        if(tempkategori!=null) {
+            if (kullanicivarmi(kullanici, tempkategori.kullanicikok) == null) {
 
+                Kullanici yenikullanici = new Kullanici();
+                yenikullanici.kullanici_adi = kullanici;
+                yenikullanici.kategori_ismi=kategori;
+                yenikullanici.rezervasyon_sayisi++;
+
+
+
+                if (tempkategori.kullanicikok == null){
+                    yenikullanici.kok = tempkategori;
+                    tempkategori.kullanicikok=yenikullanici;
+
+                }
+
+                else{
+
+                    yenikullanici_ekle(yenikullanici, tempkategori.kullanicikok,kategori);
+
+                }
+
+            }else{
+
+                kullanicivarmi(kullanici, tempkategori.kullanicikok).rezervasyon_sayisi++;
+                kullaniciguncelle(kullanicivarmi(kullanici, tempkategori.kullanicikok),tempkategori.kullanicikok,kategori);
+            }
+
+        }
+    }
+
+    private static void kullaniciguncelle(Kullanici kullanici, Kullanici kok,String kategori) {
+        Kullanici temp=new Kullanici();
+        Kullanici karsilastirma=kullanici.ust;
+        if(kullanici.ust==null)return;
+        while(true){
+    if(kullanici.rezervasyon_sayisi>karsilastirma.rezervasyon_sayisi){
+
+       temp.rezervasyon_sayisi=kullanici.rezervasyon_sayisi;
+       temp.kategori_ismi=kullanici.kategori_ismi;
+       temp.kullanici_adi=kullanici.kullanici_adi;
+       kullanici.kullanici_adi=karsilastirma.kullanici_adi;
+       kullanici.rezervasyon_sayisi=karsilastirma.rezervasyon_sayisi;
+       kullanici.kategori_ismi=karsilastirma.kategori_ismi;
+       karsilastirma.kullanici_adi=temp.kullanici_adi;
+       karsilastirma.rezervasyon_sayisi=temp.rezervasyon_sayisi;
+       karsilastirma.kategori_ismi=temp.kategori_ismi;
+
+        }
+        karsilastirma=karsilastirma.ust;
+    if(karsilastirma==null)break;
+        }
+    }
+
+
+
+    private static void yenikullanici_ekle(Kullanici yenikullanici, Kullanici kok,String kategori) {
+
+
+
+            if(yenikullanici.ust!=null)return ;
+
+
+            if(kok.sag==null){
+
+                yenikullanici.ust=kok;
+                kok.sag=yenikullanici;
+                while(kok!=null){
+                    kok.derinlik++;
+                    kok=kok.ust;
+                }
+                return ;
+            }else if(kok.sol==null){
+
+                yenikullanici.ust=kok;
+                kok.sol=yenikullanici;
+                while(kok!=null){
+                    kok.derinlik++;
+                    kok=kok.ust;
+                }
+                return ;
+            }
+
+            if( kok.sag.derinlik<kok.sol.derinlik)
+                yenikullanici_ekle(yenikullanici,kok.sag,kategori);
+            else
+                yenikullanici_ekle(yenikullanici,kok.sol,kategori);
+
+            }
+
+
+
+    public static void kullanicilariYazdir(Kullanici kok){
+
+        if(kok==null)return;
+
+        System.out.println("\nbas-"+kok.kullanici_adi+"  "+kok.rezervasyon_sayisi);
+        if(kok.sag!=null) System.out.print("sag - "+kok.sag.kullanici_adi+"  ");
+        if(kok.sol!=null) System.out.println("sol - "+kok.sol.kullanici_adi);
+        if(kok.sag==null &&kok.sol==null)return;
+        kullanicilariYazdir(kok.sag);
+        kullanicilariYazdir(kok.sol);
 
     }
+
     public static Kullanici kullanicivarmi(String kullanici,Kullanici kok){
 
 
         Kullanici temp=null;
+        if(kok==null)return null;
         if(kok.kullanici_adi.equals(kullanici)) return kok;
 
 
@@ -125,7 +226,7 @@ public class Main {
     public static void kategoriagac(String kategori){
         ArrayList<String> kategoriler=new ArrayList<String>();
         String temp="";
-        Kategori aranacak_kok=kok;
+        Kategori aranacak_kok= kategoriKOK;
         Kategori aranan_kok;
         String kategori_yolu="";
         for (int i = 0; i <kategori.length() ; i++) {
@@ -169,7 +270,7 @@ public class Main {
 
 
         }
-        kok.rezervasyon_sayisi++;
+        kategoriKOK.rezervasyon_sayisi++;
 
     }
     public static Kategori kategorivarmi(String kategori,Kategori temp){

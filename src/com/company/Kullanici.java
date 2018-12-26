@@ -9,12 +9,15 @@ public class Kullanici {
     public String kullanici_adi;
     public String kategori_ismi;
     public int rezervasyon_sayisi;
+    public int derinlik;
 
     Kullanici(){
         ust=null;
         sag=null;
         sol=null;
         kok=null;
+        derinlik=0;
+        rezervasyon_sayisi=0;
     }
 
 }
