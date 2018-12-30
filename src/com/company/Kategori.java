@@ -18,8 +18,8 @@ public class Kategori {
         alt=new ArrayList<Kategori>();
         ust=null;
         kullanicikok=null;
-        kategori_ismi="rezervasyon";
-        kategori_yolu="";
+        kategori_ismi="Rezervasyon";
+        kategori_yolu="Rezervasyon";
         derinlik=0;
         rezervasyon_sayisi=0;
         kullanici_sayisi=0;
