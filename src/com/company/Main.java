@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-
+import java.lang.Object;
 public class Main {
 
     public final static Kategori kategoriKOK = new Kategori();
@@ -42,7 +42,9 @@ public class Main {
         Kategori tempkategori=null;
         Kullanici tempkullanici=null;
 
-
+        kullanicilariYazdir(kategorivarmi("deneme",kategoriKOK).kullanicikok);
+        System.out.println("\n\n");
+        Yazdir(kategoriKOK);
         while (true){
 
                System.out.println("\nKategori           ile ilgili işlemler için : 1");
@@ -165,9 +167,10 @@ public class Main {
                            }else if (secimint == 3) {
                                System.out.print("Kullanıcı silmek istediğiniz kategorinin ismini giriniz : ");
                                secimstring=scan.nextLine();
-                               if(kategorivarmi(secimstring,tempkategori)==null){
+                               if(kategorivarmi(secimstring,kategoriKOK)==null){
                                    System.out.println("\nGirdiğiniz kategori mevcut değil. İşlem tamamlanamadı !");
                                }else{
+                                   tempkategori=kategorivarmi(secimstring,kategoriKOK);
                                    System.out.print("Hangi kullanıcıyı simek istiyorsunuz :");
                                    tempkullanici=kullanicivarmi(scan.nextLine(),tempkategori.kullanicikok);
                                    if(tempkullanici==null){
@@ -195,8 +198,8 @@ public class Main {
 
 
                }
-
-
+        System.out.println("\n\n******************");
+        kullanicilariYazdir(kategorivarmi("deneme",kategoriKOK).kullanicikok);
 
 
     }
@@ -216,50 +219,168 @@ public class Main {
 
     }
     private static void KullaniciSil2(Kullanici tempkullanici,Kategori tempkategori) {
-        Kullanici temp,temp2;
+        Kullanici temp,temp2,temp3;
+        Kategori temp4=tempkategori;
         while (true){
             if(tempkategori.ust==null)break;
             tempkategori.kullanici_sayisi--;
             tempkategori.rezervasyon_sayisi-=tempkullanici.rezervasyon_sayisi;
             tempkategori=tempkategori.ust;
         }
+        tempkategori=temp4;
+        if(tempkullanici.sag==null&&tempkullanici.sol==null){
+
+            if(tempkullanici.ust.sag==tempkullanici){
+               tempkullanici.ust.sag=null;
+
+            }else{
+                tempkullanici.ust.sol=null;
+
+            }
+            return;
+
+        }else if(tempkullanici.sag==null){
+
+            if(tempkullanici.ust.sag==tempkullanici){
+                tempkullanici.ust.sag=tempkullanici.sol;
+                tempkullanici.sol.ust=tempkullanici.ust;
+
+            }else{
+                tempkullanici.ust.sol=tempkullanici.sol;
+                tempkullanici.sol.ust=tempkullanici.ust;
+
+            }
+            return;
+        }else if(tempkullanici.sol==null){
+
+            if(tempkullanici.ust.sag==tempkullanici){
+                tempkullanici.ust.sag=tempkullanici.sag;
+                tempkullanici.sag.ust=tempkullanici.ust;
+
+            }else{
+                tempkullanici.ust.sol=tempkullanici.sag;
+                tempkullanici.sag.ust=tempkullanici.ust;
+
+            }
+            return;
+
+        }
     if(tempkullanici.ust==null){
         if(tempkullanici.sag.rezervasyon_sayisi>tempkullanici.sol.rezervasyon_sayisi)
         {
+            tempkullanici.sag.ust=null;
             tempkullanici.kok.kullanicikok=tempkullanici.sag;
             temp=tempkullanici.sol;
+            tempkullanici=tempkullanici.kok.kullanicikok;
+            if(tempkullanici.sol!=null)
+            tempkullanici.derinlik-=tempkullanici.sol.derinlik;
+            temp2=tempkullanici.sol;
+            tempkullanici.sol=temp;
         }
         else
         {
+            tempkullanici.sol.ust=null;
             tempkullanici.kok.kullanicikok=tempkullanici.sol;
             temp=tempkullanici.sag;
+            tempkullanici=tempkullanici.kok.kullanicikok;
+            if(tempkullanici.sag!=null)
+            tempkullanici.derinlik-=tempkullanici.sag.derinlik;
+            temp2=tempkullanici.sag;
+            tempkullanici.sag=temp;
+        }
+
+        tempkullanici.derinlik+=temp.derinlik;
+
+        if(temp2!=null) {
+            temp3 = new Kullanici(temp2);
+            yenikullanici_ekle(temp3, tempkategori.kullanicikok);
+
+            kullaniciguncelle(temp3);
+            Kullanicidugumunekle(tempkategori.kullanicikok, temp2);
         }
 
 
-        tempkullanici=tempkullanici.kok.kullanicikok;
-        tempkullanici.derinlik-=tempkullanici.sol.derinlik;
-        temp2=tempkullanici.sol;
-        tempkullanici.sol=temp;
+    }else{
+
+        if(tempkullanici.sag.rezervasyon_sayisi>tempkullanici.sol.rezervasyon_sayisi)
+        {
+            tempkullanici.sag.ust=tempkullanici.ust;
+
+            if(tempkullanici.ust.sag==tempkullanici)
+            {
+                tempkullanici.ust.sag=tempkullanici.sag;
+                temp=tempkullanici.sol;
+                tempkullanici= tempkullanici.ust.sag;
+            }
+            else
+            {
+                tempkullanici.ust.sol=tempkullanici.sag;
+                temp=tempkullanici.sol;
+                tempkullanici=tempkullanici.ust.sol;
+            }
+
+            if(tempkullanici.sol!=null)
+            tempkullanici.derinlik-=tempkullanici.sol.derinlik;
+            temp2=tempkullanici.sol;
+            tempkullanici.sol=temp;
+        }
+        else
+        {
+            tempkullanici.sol.ust=tempkullanici.ust;
+
+            if(tempkullanici.ust.sag==tempkullanici)
+            {
+                tempkullanici.ust.sag=tempkullanici.sol;
+                temp=tempkullanici.sag;
+                tempkullanici= tempkullanici.ust.sag;
+            }
+            else
+            {
+                tempkullanici.ust.sol=tempkullanici.sol;
+                temp=tempkullanici.sag;
+                tempkullanici=tempkullanici.ust.sol;
+            }
+
+            if(tempkullanici.sag!=null)
+            tempkullanici.derinlik-=tempkullanici.sag.derinlik;
+            temp2=tempkullanici.sag;
+            tempkullanici.sag=temp;
+        }
+
         tempkullanici.derinlik+=temp.derinlik;
 
-        yenikullanici_ekle(temp2,tempkategori.kullanicikok);
-        kullaniciguncelle(temp2);
-        Kullanicidugumunekle(tempkategori.kullanicikok,temp2);
+        if(temp2!=null) {
+            temp3 = new Kullanici(temp2);
 
+            yenikullanici_ekle(temp3, tempkategori.kullanicikok);
+            kullaniciguncelle(temp3);
 
+            Kullanicidugumunekle(tempkategori.kullanicikok, temp2);
+
+        }
 
     }
 
     }
     private static void Kullanicidugumunekle(Kullanici kok,Kullanici dugum){
+        Kullanici temp;
+
 
         if(dugum==null)return;
 
-        yenikullanici_ekle(dugum.sag,kok);
-        kullaniciguncelle(dugum.sag);
-        yenikullanici_ekle(dugum.sol,kok);
-        kullaniciguncelle(dugum.sol);
 
+        if(dugum.sag!=null) {
+            temp = new Kullanici(dugum.sag);
+            yenikullanici_ekle(temp, kok);
+            kullaniciguncelle(temp);
+
+        }
+        if(dugum.sol!=null) {
+            temp = new Kullanici(dugum.sol);
+            yenikullanici_ekle(temp, kok);
+            kullaniciguncelle(temp);
+
+        }
         Kullanicidugumunekle(kok,dugum.sag);
         Kullanicidugumunekle(kok,dugum.sol);
 
@@ -535,14 +656,20 @@ public class Main {
 
     private static void kullaniciguncelle(Kullanici kullanici) {
         Kullanici karsilastirma=kullanici.ust;
-        if(kullanici.ust==null)return;
+
+        if(kullanici.ust==null){
+
+            return;
+        }
         while(true){
+
     if(kullanici.rezervasyon_sayisi>karsilastirma.rezervasyon_sayisi){
 
        kullaniciyerdegistir(kullanici,karsilastirma);
-
+        kullanici=karsilastirma;
         }
         karsilastirma=karsilastirma.ust;
+
     if(karsilastirma==null)break;
         }
     }
