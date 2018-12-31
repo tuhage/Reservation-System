@@ -243,6 +243,19 @@ public class Main {
                                }
 
                            }else if (secimint == 3) {
+                               ArrayList<String> kullanicisimleri=new ArrayList<String>(200);
+                               System.out.print("Hangi yerde rezervasyon yaptırmış kullanıcıları listelemek istiyorsunuz :");
+                               String yer=scan.nextLine();
+                               System.out.println("\nKullanıcılar Gösteriliyor");
+                               System.out.println("--------------------------");
+                               listele3(kullanicisimleri,yer,kategoriKOK);
+                               if(kullanicisimleri.size()==0){
+                                   System.out.println("\nGirdiğiniz kategorinin altında kullanıcı bulunmamaktadır.");
+                                   continue;
+                               }
+                               for (int i = 0; i <kullanicisimleri.size() ; i++) {
+                                   System.out.println(kullanicisimleri.get(i));
+                               }
 
                            }else if (secimint == 4) {
 
@@ -268,6 +281,36 @@ public class Main {
 
        // kullanicilariYazdir(kategorivarmi("rezervasyon",kategoriKOK).kullanicikok);
 
+
+    }
+
+    private static void listele3(ArrayList<String> kullanicisimleri, String yer, Kategori temp) {
+
+        if(temp.kullanicikok!=null) {
+
+            yeregorekullanicikontrol(kullanicisimleri,temp.kullanicikok,yer);
+
+
+        }
+
+        if(temp.alt.size()!=0){
+
+            for (int i = 0; i <temp.alt.size() ; i++) {
+
+
+                if(temp.kullanicikok!=null)
+                {
+                    yeregorekullanicikontrol(kullanicisimleri,temp.alt.get(i).kullanicikok,yer);
+
+                }
+
+
+                listele3(kullanicisimleri,yer,temp.alt.get(i));
+
+
+            }
+
+        }
 
     }
 
@@ -359,13 +402,12 @@ public class Main {
 
     private static void KullaniciSil1(Kategori tempkategori) {
         Kategori temp=tempkategori.ust;
-       while (true){
+        do {
 
-           temp.kullanici_sayisi-=tempkategori.kullanici_sayisi;
-           temp.rezervasyon_sayisi-=tempkategori.rezervasyon_sayisi;
-           temp=temp.ust;
-           if(temp==null)break;
-       }
+            temp.kullanici_sayisi -= tempkategori.kullanici_sayisi;
+            temp.rezervasyon_sayisi -= tempkategori.rezervasyon_sayisi;
+            temp = temp.ust;
+        } while (temp != null);
        tempkategori.rezervasyon_sayisi=0;
        tempkategori.kullanici_sayisi=0;
        tempkategori.kullanicikok=null;
@@ -638,19 +680,18 @@ public class Main {
 
         String isim=kok.kok.kullanici_adi;
         String kategori=kok.kok.kategori_ismi;
-        while (true){
-            if(kok==null)break;
+        while (kok != null) {
             System.out.println("--------------------------------------");
-            System.out.println("İsim = "+isim);
-            System.out.println("Kategori = "+kategori);
-            System.out.println("Sehir = "+kok.sehir);
-            System.out.println("Enlem = "+kok.enlem);
-            System.out.println("Boylam = "+kok.boylam);
-            System.out.println("Zaman = "+kok.rezervasyon_zamani);
-            System.out.println("Yer Id = "+kok.yer_id);
+            System.out.println("İsim = " + isim);
+            System.out.println("Kategori = " + kategori);
+            System.out.println("Sehir = " + kok.sehir);
+            System.out.println("Enlem = " + kok.enlem);
+            System.out.println("Boylam = " + kok.boylam);
+            System.out.println("Zaman = " + kok.rezervasyon_zamani);
+            System.out.println("Yer Id = " + kok.yer_id);
             System.out.println("--------------------------------------");
 
-            kok=kok.sonraki;
+            kok = kok.sonraki;
         }
 
 
@@ -961,8 +1002,12 @@ public class Main {
     private static boolean yerkontrol(Rezervasyon kok, String yerid){
         Rezervasyon temp=kok;
         while (temp != null) {
-            if (temp.yer_id.equals(yerid)) return true;
+            if (temp.yer_id.equals(yerid)){
+                return true;
+            }
+
             temp = temp.sonraki;
+
         }
         return false;
     }
@@ -976,7 +1021,7 @@ public class Main {
         }
 
         if(kok.sag!=null){
-            if(yerkontrol(kok.rezervasyon_kok,yerid)) {
+            if(yerkontrol(kok.sag.rezervasyon_kok,yerid)) {
                 if (!kullanicilar.contains(kok.sag.kullanici_adi)) {
 
                     kullanicilar.add(kok.sag.kullanici_adi);
@@ -984,7 +1029,7 @@ public class Main {
             }
         }
         if(kok.sol!=null){
-            if(yerkontrol(kok.rezervasyon_kok,yerid)) {
+            if(yerkontrol(kok.sol.rezervasyon_kok,yerid)) {
                 if (!kullanicilar.contains(kok.sol.kullanici_adi)) {
 
                     kullanicilar.add(kok.sol.kullanici_adi);
