@@ -7,15 +7,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-import java.lang.Object;
+
+
 public class Main {
 
-    public final static Kategori kategoriKOK = new Kategori();
+    private final static Kategori kategoriKOK = new Kategori();
 
 
     public static void main(String[] args) throws IOException {
 
-        File file = new File("/home/tuhage/proje4/rezervasyon.txt");
+        String Dosyaismi="rezervasyon2";
+        File file = new File("/home/tuhage/proje4/"+Dosyaismi+".txt");
 
         BufferedReader br = new BufferedReader(new FileReader(file));
         Scanner scan=new Scanner(System.in);
@@ -66,10 +68,8 @@ public class Main {
                            secimstring=scan.nextLine();
                            tempkategori=kategorivarmi(secimstring,kategoriKOK);
                            if(tempkategori!=null){
-                               while(true){
                                    Kategoribilgileriyaz(tempkategori);
-                                   break;
-                               }
+
                            }else{
                                System.out.println("Girdiğiniz kategori bulunamamıştır.");
                                continue;
@@ -90,7 +90,7 @@ public class Main {
                                    if (secimint == 1) {
                                        System.out.print("Eklemek istediğiniz kategorinin ismini giriniz : ");
                                        secimstring=scan.nextLine();
-                                       if(kategorivarmi(secimstring,tempkategori)!=null){
+                                       if(kategorivarmi2(secimstring,tempkategori)!=null){
                                            System.out.println("\nGirdiğiniz kategori zaten mevcut. İşlem tamamlanamadı !");
                                        }else{
                                         KategoriEkle(secimstring,tempkategori);
@@ -100,10 +100,10 @@ public class Main {
                                else if (secimint == 2) {
                                    System.out.print("Silmek istediğiniz kategorinin ismini giriniz : ");
                                    secimstring=scan.nextLine();
-                                   if(kategorivarmi(secimstring,tempkategori)==null){
+                                   if(kategorivarmi2(secimstring,tempkategori)==null){
                                        System.out.println("\nGirdiğiniz kategori mevcut değil. İşlem tamamlanamadı !");
                                    }else{
-                                       KategoriSil(kategorivarmi(secimstring,tempkategori));
+                                       KategoriSil(kategorivarmi2(secimstring,tempkategori));
                                        System.out.println("\nSilme işlemi başarı ile tamamlandı.");
                                    }
                                }else if(secimint==3 )
@@ -158,10 +158,6 @@ public class Main {
                                    System.out.println("\nGirdiğiniz kategori mevcut değil. İşlem tamamlanamadı !");
                                }else{
                                    tempkategori=kategorivarmi(secimstring,kategoriKOK);
-                                   if(tempkategori.kullanicikok==null){
-                                       System.out.println("\nGirdiğiniz kategori içerisinde kullanıcı bulunmamaktadir. İşlem tamamlanamadı ! ");
-                                       continue;
-                                   }
                                    KullaniciSil1(tempkategori);
                                    System.out.println("\nSilme işlemi başarı ile tamamlandı.");
                                }
@@ -173,21 +169,19 @@ public class Main {
                                }else{
                                    tempkategori=kategorivarmi(secimstring,kategoriKOK);
                                    System.out.print("Hangi kullanıcıyı silmek istiyorsunuz :");
-                                   tempkullanici=kullanicivarmi(scan.nextLine(),tempkategori.kullanicikok);
-                                   if(tempkullanici==null){
-                                       System.out.println("\nBu kategori altında böyle bir kullanıcı bulunmamaktadır !");
-                                       continue;
-                                   }
-
-                                   KullaniciSil2(tempkullanici,tempkategori);
-                                   System.out.println("\nSilme işlemi başarı ile tamamlandı.");
+                                   if(KullaniciSil3(scan.nextLine(),tempkategori)!=0)
+                                       System.out.println("\nSilme işlemi başarı ile tamamlandı.");
+                                   else
+                                       System.out.println("\nBu isimde bir kullanıcı bulunmamaktadır.");
                                }
                            }else if (secimint == 4) {
                                System.out.print("Tüm kategorilerden silmek istediğiniz kullanıcının ismini giriniz : ");
                                secimstring=scan.nextLine();
 
-                                   KullaniciSil3(secimstring,kategoriKOK);
+                               if(KullaniciSil3(secimstring,kategoriKOK)!=0)
                                    System.out.println("\nSilme işlemi başarı ile tamamlandı.");
+                               else
+                                   System.out.println("\nBu isimde bir kullanıcı bulunmamaktadır.");
                                }else if(secimint==5)break;
                            else
                            {
@@ -219,11 +213,16 @@ public class Main {
                            }
                            scan.nextLine();
                            if (secimint == 1) {
+                               ArrayList<String> kategorisimleri=new ArrayList<String>(200);
                                System.out.print("Hangi kullanıcıyı ait kategorileri listelemek istiyorsunuz :");
                                String a=scan.nextLine();
                                System.out.println("\nKategoriler Gösteriliyor");
                                System.out.println("--------------------------");
-                               listele1(a,kategoriKOK);
+                               listele1(a,kategoriKOK,kategorisimleri);
+                               for (int i = 0; i <kategorisimleri.size() ; i++) {
+                                   System.out.println(kategorisimleri.get(i));
+
+                               }
 
                            }
 
@@ -233,7 +232,12 @@ public class Main {
                                tempkategori=kategorivarmi(scan.nextLine(),kategoriKOK);
                                System.out.println("\nKullanıcılar Gösteriliyor");
                                System.out.println("--------------------------");
+                               if(tempkategori!=null)
                                listele2(tempkategori,kullanicisimleri);
+                               else{
+                                   System.out.println("\nBöyle bir kategori mevcut değil");
+                                   continue;
+                               }
                                if(kullanicisimleri.size()==0){
                                    System.out.println("\nGirdiğiniz kategorinin altında kullanıcı bulunmamaktadır.");
                                    continue;
@@ -250,7 +254,7 @@ public class Main {
                                System.out.println("--------------------------");
                                listele3(kullanicisimleri,yer,kategoriKOK);
                                if(kullanicisimleri.size()==0){
-                                   System.out.println("\nGirdiğiniz kategorinin altında kullanıcı bulunmamaktadır.");
+                                   System.out.println("\nGirdiğiniz yerde kullanıcı bulunmamaktadır.");
                                    continue;
                                }
                                for (int i = 0; i <kullanicisimleri.size() ; i++) {
@@ -258,6 +262,21 @@ public class Main {
                                }
 
                            }else if (secimint == 4) {
+                               ArrayList<Rezervasyon> rezervasyonlar=new ArrayList<>(200);
+                               System.out.print("Hangi kullanıcıyı ait rezervasyonları listelemek istiyorsunuz :");
+                               String kullanici=scan.nextLine();
+                               System.out.println("\nRezervasyonlar Gösteriliyor");
+                               System.out.println("-------------------------");
+                               listele4(rezervasyonlar,kullanici,kategoriKOK);
+                               for (int i = 0; i <rezervasyonlar.size() ; i++) {
+
+                                   System.out.println("Yer id = "+rezervasyonlar.get(i).yer_id);
+                                   System.out.println("Enlem  = "+rezervasyonlar.get(i).enlem);
+                                   System.out.println("Boylam = "+rezervasyonlar.get(i).boylam);
+                                   System.out.println("Sehir  = "+rezervasyonlar.get(i).sehir);
+                                   System.out.println("Son rezervasyon zamani = "+rezervasyonlar.get(i).rezervasyon_zamani);
+                                   System.out.println("-------------------------");
+                               }
 
                            }else if(secimint==5)break;
                            else
@@ -282,6 +301,107 @@ public class Main {
        // kullanicilariYazdir(kategorivarmi("rezervasyon",kategoriKOK).kullanicikok);
 
 
+    }
+
+    private static void listele4( ArrayList<Rezervasyon> rezervasyonlar,String kullanici, Kategori temp) {
+        if(temp.kullanicikok!=null) {
+
+            if(kullanicivarmi(kullanici,temp.kullanicikok)!=null){
+
+                kullaniciyagoreyer(rezervasyonlar,kullanici,kullanicivarmi(kullanici,temp.kullanicikok).rezervasyon_kok);
+            }
+
+
+        }
+
+        if(temp.alt.size()!=0){
+
+            for (int i = 0; i <temp.alt.size() ; i++) {
+
+
+                if(temp.kullanicikok!=null)
+                {
+                    if(kullanicivarmi(kullanici,temp.alt.get(i).kullanicikok)!=null) {
+
+                        kullaniciyagoreyer(rezervasyonlar, kullanici, kullanicivarmi(kullanici, temp.alt.get(i).kullanicikok).rezervasyon_kok);
+                    }
+                }
+
+
+                listele4(rezervasyonlar,kullanici,temp.alt.get(i));
+
+
+            }
+
+        }
+    }
+
+    private static void kullaniciyagoreyer(ArrayList<Rezervasyon> rezervasyonlar, String kullanici, Rezervasyon rezervasyon_kok) {
+
+
+        if(rezervasyon_kok==null)return;
+
+        Rezervasyon temp=rezervasyon_kok;
+
+        while(temp!=null){
+
+        rezervasyonekle(rezervasyonlar,temp);
+        temp=temp.sonraki;
+        }
+
+    }
+
+    private static void rezervasyonekle(ArrayList<Rezervasyon> rezervasyonlar,Rezervasyon rezervasyon){
+        for (int i = 0; i <rezervasyonlar.size() ; i++) {
+
+            if(rezervasyonlar.get(i).yer_id.equals(rezervasyon.yer_id)){
+
+               if(rezervasyonzamankarsilastir(rezervasyonlar.get(i).rezervasyon_zamani,rezervasyon.rezervasyon_zamani)){
+                   rezervasyonlar.remove(i);
+                   rezervasyonlar.add(rezervasyon);
+                   return;
+
+               }else
+                   return;
+
+            }
+        }
+
+        rezervasyonlar.add(rezervasyon);
+    }
+
+    private static boolean rezervasyonzamankarsilastir(String rezervasyon_zamani1, String rezervasyon_zamani2) {
+
+        ArrayList<Integer> z1=new ArrayList<>(),z2=new ArrayList<>();String temp="";
+
+        for (int i = 0; i <rezervasyon_zamani1.length() ; i++) {
+            if(rezervasyon_zamani1.charAt(i)=='-'||rezervasyon_zamani1.charAt(i)=='T'||rezervasyon_zamani1.charAt(i)==':'){
+                z1.add(Integer.parseInt(temp));
+                temp="";
+                continue;
+            }
+            temp+=rezervasyon_zamani1.charAt(i);
+        }
+        z1.add(Integer.parseInt(temp));
+        temp="";
+
+        for (int i = 0; i <rezervasyon_zamani2.length() ; i++) {
+            if(rezervasyon_zamani2.charAt(i)=='-'||rezervasyon_zamani2.charAt(i)=='T'||rezervasyon_zamani2.charAt(i)==':'){
+                z2.add(Integer.parseInt(temp));
+                temp="";
+                continue;
+            }
+            temp+=rezervasyon_zamani2.charAt(i);
+        }
+        z2.add(Integer.parseInt(temp));
+
+        for (int i = 0; i <z1.size() ; i++) {
+
+            if(z2.get(i)>z1.get(i))return true;
+
+        }
+
+return false;
     }
 
     private static void listele3(ArrayList<String> kullanicisimleri, String yer, Kategori temp) {
@@ -313,28 +433,24 @@ public class Main {
         }
 
     }
+    public static void listele2(Kategori temp,ArrayList<String> kullanicisimleri){
 
-    private static void listele2(Kategori temp,ArrayList<String> kullanicisimleri) {
+        if(temp.kullanicikok!=null)
+        {
 
+            listele22(temp,kullanicisimleri);
 
-
-            if(temp.kullanicikok!=null) {
-
-                kullaniciAlistekle(kullanicisimleri,temp.kullanicikok);
-
-
-            }
-
+        }
         if(temp.alt.size()!=0){
-
             for (int i = 0; i <temp.alt.size() ; i++) {
 
+                if(temp.alt.get(i).kullanicikok!=null)
+                {
 
-                    if(temp.kullanicikok!=null)
-                    {
-                        kullaniciAlistekle(kullanicisimleri,temp.alt.get(i).kullanicikok);
+                   listele22(temp.alt.get(i),kullanicisimleri);
 
-                    }
+                }
+
 
 
                 listele2(temp.alt.get(i),kullanicisimleri);
@@ -344,27 +460,65 @@ public class Main {
 
         }
 
+
     }
 
-    private static void listele1(String secimstring,Kategori temp) {
+    private static void listele22(Kategori temp,ArrayList<String> kullanicisimleri) {
 
+
+
+            if(temp.kullanicikok!=null) {
+
+                kullaniciAlistekle(kullanicisimleri,temp.kullanicikok);
+
+            }
+
+        if(temp.alt.size()!=0){
+
+            for (int i = 0; i <temp.alt.size() ; i++) {
+
+
+                    if(temp.alt.get(i).kullanicikok!=null)
+                    {
+                        kullaniciAlistekle(kullanicisimleri,temp.alt.get(i).kullanicikok);
+
+                    }
+
+
+                listele22(temp.alt.get(i),kullanicisimleri);
+
+
+            }
+
+        }
+
+    }
+
+    private static void listele1(String secimstring,Kategori temp,ArrayList<String> kategorisimleri) {
+
+        int kontrol=0;
 
         if(kullanicivarmi(secimstring,temp.kullanicikok)!=null){
-            if(temp.kullanicikok!=null)
-            {System.out.println(temp.kategori_ismi);
-            return;}
+           if(!(kategorisimleri.contains(temp.kategori_ismi))) {
+
+               kategorisimleri.add(temp.kategori_ismi);
+
+           }
+
         }
         if(temp.alt.size()!=0){
             for (int i = 0; i <temp.alt.size() ; i++) {
 
                 if(kullanicivarmi(secimstring,temp.alt.get(i).kullanicikok)!=null)
                 {
-                    if(temp.kullanicikok!=null){
-                    System.out.println(temp.kategori_ismi);
-                    return;}
+                    if(!(kategorisimleri.contains(temp.alt.get(i).kategori_ismi))) {
+
+                        kategorisimleri.add(temp.alt.get(i).kategori_ismi);
+
+                    }
                 }
 
-                listele1(secimstring,temp.alt.get(i));
+                listele1(secimstring,temp.alt.get(i),kategorisimleri);
 
 
             }
@@ -374,12 +528,13 @@ public class Main {
     }
 
 
-    private static void KullaniciSil3(String secimstring,Kategori temp) {
+    private static int KullaniciSil3(String secimstring,Kategori temp) {
 
-       Kullanici temp3;
+       Kullanici temp3;int kontrol=0;
         if(kullanicivarmi(secimstring,temp.kullanicikok)!=null){
             temp3=kullanicivarmi(secimstring,temp.kullanicikok);
             KullaniciSil2(temp3,temp);
+            kontrol++;
         }
         if(temp.alt.size()!=0){
             for (int i = 0; i <temp.alt.size() ; i++) {
@@ -388,6 +543,7 @@ public class Main {
                 {
                     temp3=kullanicivarmi(secimstring,temp.alt.get(i).kullanicikok);
                     KullaniciSil2(temp3,temp.alt.get(i));
+                   kontrol++;
                 }
 
                 KullaniciSil3(secimstring,temp.alt.get(i));
@@ -397,26 +553,57 @@ public class Main {
 
         }
 
+        return kontrol;
+
 
     }
 
+
+    public static void Kullanicisil(Kategori temp){
+
+
+        if(temp.alt.size()!=0){
+            for (int i = 0; i <temp.alt.size() ; i++) {
+
+                if(temp.alt.get(i).kullanicikok!=null)
+                {
+
+                    temp.alt.get(i).rezervasyon_sayisi=0;
+                    temp.alt.get(i).kullanici_sayisi=0;
+                    temp.alt.get(i).kullanicikok=null;
+
+                }
+
+
+
+                    Kullanicisil(temp.alt.get(i));
+
+
+            }
+
+        }
+
+    }
     private static void KullaniciSil1(Kategori tempkategori) {
         Kategori temp=tempkategori.ust;
-        do {
 
+        while (temp != null) {
             temp.kullanici_sayisi -= tempkategori.kullanici_sayisi;
             temp.rezervasyon_sayisi -= tempkategori.rezervasyon_sayisi;
             temp = temp.ust;
-        } while (temp != null);
+        }
+
+
        tempkategori.rezervasyon_sayisi=0;
        tempkategori.kullanici_sayisi=0;
        tempkategori.kullanicikok=null;
 
+       Kullanicisil(tempkategori);
 
     }
     private static void KullaniciSil2(Kullanici tempkullanici,Kategori tempkategori) {
         Kullanici temp,temp2,temp3;
-        Kategori temp4=tempkategori.ust;
+        Kategori temp4=tempkategori;
         while (true){
 
             temp4.kullanici_sayisi--;
@@ -608,7 +795,7 @@ public class Main {
 
     }
     private static void KategoriSil(Kategori tempkategori) {
-
+        Kategori temp=tempkategori.ust;
         tempkategori.ust.alt.remove(tempkategori);
         for (int i = 0; i <tempkategori.alt.size() ; i++) {
             tempkategori.alt.get(i).derinlik--;
@@ -618,13 +805,24 @@ public class Main {
         tempkategori.ust.alt.addAll(tempkategori.alt);
         tempkategori.ust.alt_kategori_sayisi+=(tempkategori.alt_kategori_sayisi-1);
         for (int i = 0; i <tempkategori.alt.size(); i++) {
-            tempkategori.ust.rezervasyon_sayisi+=tempkategori.alt.get(i).rezervasyon_sayisi;
+            while(temp!=null)
+            {
+                temp.rezervasyon_sayisi+=tempkategori.alt.get(i).rezervasyon_sayisi;
+                temp.kullanici_sayisi+=tempkategori.alt.get(i).kullanici_sayisi;
+                temp=temp.ust;
+            }
         }
-        tempkategori.ust.rezervasyon_sayisi-=tempkategori.rezervasyon_sayisi;
-        for (int i = 0; i <tempkategori.alt.size(); i++) {
-            tempkategori.ust.kullanici_sayisi+=tempkategori.alt.get(i).kullanici_sayisi;
+        temp=tempkategori.ust;
+        while(temp!=null)
+        {
+
+            temp.rezervasyon_sayisi-=tempkategori.rezervasyon_sayisi;
+            temp.kullanici_sayisi-=tempkategori.kullanici_sayisi;
+
+            temp=temp.ust;
         }
-        tempkategori.ust.kullanici_sayisi-=tempkategori.kullanici_sayisi;
+
+
         tempkategori.alt.clear();
         tempkategori=null;
     }
@@ -1142,6 +1340,18 @@ public class Main {
         }
         return null;
     }
+    public static Kategori kategorivarmi2(String kategori,Kategori temp){
+
+            for (int i = 0; i <temp.alt.size() ; i++) {
+
+                if(temp.alt.get(i).kategori_ismi.equalsIgnoreCase(kategori))
+                    return temp.alt.get(i);
+            }
+
+
+        return null;
+    }
+
 
     public static void Yazdir(Kategori kok){
 
