@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.Random;
 import java.util.Scanner;
 
 
@@ -13,14 +14,15 @@ public class Main {
 
     private final static Kategori kategoriKOK = new Kategori();
 
+    private static Scanner scan=new Scanner(System.in);
 
     public static void main(String[] args) throws IOException {
 
-        String Dosyaismi="rezervasyon";
+        String Dosyaismi="rezervasyon2";
         File file = new File("/home/tuhage/proje4/"+Dosyaismi+".txt");
 
         BufferedReader br = new BufferedReader(new FileReader(file));
-        Scanner scan=new Scanner(System.in);
+
 
         String st=br.readLine();
         while ((st = br.readLine()) != null)
@@ -345,7 +347,7 @@ public class Main {
                }
         System.out.println("\n\n******************");
 
-        kullanicilariYazdir(kategorivarmi("rezervasyon",kategoriKOK).kullanicikok);
+
 
 
     }
@@ -895,6 +897,11 @@ return false;
         yenikullanici.kullanici_adi = kullanicisim;
         yenikullanici.kategori_ismi=kok.kategori_ismi;
         kullanicisayisiarttir(kok);
+        int rezervasyon_sayisi;
+        Random rand = new Random();
+        String yerid,sehir,zaman,enlem,boylam;
+        System.out.print("Kaç adet rezervasyon girmek istiyorsunuz ? : ");
+        rezervasyon_sayisi=scan.nextInt();
 
         if (kok.kullanicikok == null){
             yenikullanici.kok = kok;
@@ -908,7 +915,55 @@ return false;
 
         }
 
+        while (true){
+            System.out.print("Rezervasyon bilgilerini : \nElle     girmek için :1\n" +
+                    "Rastgele atamak için : 2 \nLütfen bir secim yapınız: ");
+
+            int secimint=scan.nextInt();
+        if(secimint==1){
+
+            for (int i = 0; i <rezervasyon_sayisi ; i++) {
+                System.out.println("-------"+(i+1)+".rezervasyon--------------");
+                System.out.println("Sehir  : ");
+                sehir=scan.nextLine();
+                System.out.println("Yer id : ");
+                yerid=scan.nextLine();
+                System.out.println("Zaman (yil-ay-gunTsaat:dakika:saniye) : ");
+                zaman=scan.nextLine();
+                System.out.println("Enlem : ");
+                enlem=scan.nextLine();
+                System.out.println("Boylam : ");
+                boylam=scan.nextLine();
+                rezervasyon_bagla(kullanicisim,kok,yerid,zaman,enlem,boylam,sehir);
+                rezsayiarttir(kok);
+            }
+        }else if(secimint==2){
+            for (int i = 0; i <rezervasyon_sayisi ; i++) {
+
+                sehir="Sehir"+(rand.nextInt(rezervasyon_sayisi)+1);
+                yerid="Yer"+(rand.nextInt(rezervasyon_sayisi)+1);
+                zaman=""+(2015+rand.nextInt(3))+"-"+(rand.nextInt(12)+1)+"-"+(rand.nextInt(30)+1)+"T"+(rand.nextInt(24)+1)+":"+(rand.nextInt(60)+1)+":"+(rand.nextInt(60)+1);
+                enlem=""+rand.nextInt(1000)+1;
+                boylam=""+rand.nextInt(1000)+1;
+                rezervasyon_bagla(kullanicisim,kok,yerid,zaman,enlem,boylam,sehir);
+                rezsayiarttir(kok);
+
+        }
+        }else
+            System.out.println("\nGeçersiz bir deger girdiniz. Tekrar giriniz ");
+        break;
+
+        }
+
+
+
+
+            yenikullanici.rezervasyon_sayisi=rezervasyon_sayisi;
+            kullaniciguncelle(yenikullanici);
+
     }
+
+
     private static void Kategoribilgileriyaz(Kategori kategori){
         System.out.println("\n  Kategori Bilgileri");
         System.out.println("------------------------");
@@ -944,6 +999,15 @@ return false;
 
 
 
+    }
+
+    private static void rezsayiarttir(Kategori kok){
+
+        while(kok!=null){
+            kok.rezervasyon_sayisi++;
+            kok=kok.ust;
+
+        }
     }
 
     private static void rezervasyon_al(String st) {
