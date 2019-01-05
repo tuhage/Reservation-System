@@ -1,9 +1,6 @@
 package com.company;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Random;
@@ -16,9 +13,12 @@ public class Main {
 
     private static Scanner scan=new Scanner(System.in);
 
+    private static int kontrol=0;
+
     public static void main(String[] args) throws IOException {
 
-        String Dosyaismi="rezervasyon2";
+        String Dosyaismi="rezervasyon";
+
         File file = new File("/home/tuhage/proje4/"+Dosyaismi+".txt");
 
         BufferedReader br = new BufferedReader(new FileReader(file));
@@ -28,16 +28,16 @@ public class Main {
         while ((st = br.readLine()) != null)
             kategorileri_al(st);
 
-         br.close();
+        br.close();
 
-         br = new BufferedReader(new FileReader(file));
-         st=br.readLine();
-         while ((st = br.readLine()) != null)
-           kullanicilari_al(st);
+        br = new BufferedReader(new FileReader(file));
+        st=br.readLine();
+        while ((st = br.readLine()) != null)
+            kullanicilari_al(st);
 
-         br = new BufferedReader(new FileReader(file));
-         st=br.readLine();
-         while ((st = br.readLine()) != null)
+        br = new BufferedReader(new FileReader(file));
+        st=br.readLine();
+        while ((st = br.readLine()) != null)
             rezervasyon_al(st);
 
         System.out.println("Txt dosyasindan bilgiler alındı....");
@@ -49,302 +49,311 @@ public class Main {
 
         while (true){
 
-               System.out.println("\nKategori           ile ilgili işlemler için : 1");
-               System.out.println("Kullanıcı          ile ilgili işlemler için : 2");
-               System.out.println("Sorgu ve listeleme ile ilgili işlemler için : 3");
-               System.out.println("                                 Çıkış için : 4");
-               System.out.print("Lütfen bir secim yapınız : ");
+            System.out.println("\nKategori           ile ilgili işlemler için : 1");
+            System.out.println("Kullanıcı          ile ilgili işlemler için : 2");
+            System.out.println("Sorgu ve listeleme ile ilgili işlemler için : 3");
+            System.out.println("                                 Çıkış için : 4");
+            System.out.print("Lütfen bir secim yapınız : ");
 
-               try {
-                   secimint=scan.nextInt();
-               }catch (InputMismatchException e1){
-                   scan.nextLine();
-                   continue;
-               }
+            try {
+                secimint=scan.nextInt();
+            }catch (InputMismatchException e1){
                 scan.nextLine();
+                continue;
+            }
+            scan.nextLine();
 
-               if(secimint==1){
-                       while (true){
-                           System.out.print("\nHangi kategori üzerinde işlem yapmak istiyorsunuz ? :");
-                           secimstring=scan.nextLine();
-                           if(secimstring.equalsIgnoreCase("rezervasyon")){
-                               tempkategori=kategorivarmi(secimstring,kategoriKOK);
-                               if(tempkategori!=null){
-                                   Kategoribilgileriyaz(tempkategori);
+            if(secimint==1){
+                while (true){
+                    System.out.print("\nHangi kategori üzerinde işlem yapmak istiyorsunuz ? :");
+                    secimstring=scan.nextLine();
+                    if(secimstring.equalsIgnoreCase("rezervasyon")){
+                        tempkategori=kategorivarmi(secimstring,kategoriKOK);
+                        if(tempkategori!=null){
+                            Kategoribilgileriyaz(tempkategori);
 
-                               }else{
-                                   System.out.println("Girdiğiniz kategori bulunamamıştır.");
-                                   continue;
-                               }
-                           }else{
-                           System.out.print("Bu kategori hangi kategori altında aransın : ");
-                           tempkategori=kategorivarmi(secimstring,kategorivarmi(scan.nextLine(),kategoriKOK));
-                           if(tempkategori!=null){
-                                   Kategoribilgileriyaz(tempkategori);
+                        }else{
+                            System.out.println("Girdiğiniz kategori bulunamamıştır.");
+                            continue;
+                        }
+                    }else{
+                        System.out.print("Bu kategori hangi kategori altında aransın : ");
+                        tempkategori=kategorivarmi(secimstring,kategorivarmi(scan.nextLine(),kategoriKOK));
+                        if(tempkategori!=null){
+                            Kategoribilgileriyaz(tempkategori);
 
-                           }else{
-                               System.out.println("Girdiğiniz kategori bulunamamıştır.");
-                               continue;
-                           }}
+                        }else{
+                            System.out.println("Girdiğiniz kategori bulunamamıştır.");
+                            continue;
+                        }}
 
-                           while (true) {
-                               System.out.println("\nSecilen kategorinin altına yeni kategori eklemek için : 1");
-                               System.out.println("Secilen kategorinin altından    kategori silmek  için : 2");
-                               System.out.println("                                     Geri gitmek için : 3");
-                               System.out.print("Lütfen bir secim yapınız : ");
-                               try {
-                                   secimint = scan.nextInt();
-                               } catch (InputMismatchException e1) {
-                                   scan.nextLine();
-                                   continue;
-                               }
-                               scan.nextLine();
-                                   if (secimint == 1) {
-                                       System.out.print("Eklemek istediğiniz kategorinin ismini giriniz : ");
-                                       secimstring=scan.nextLine();
-                                       if(kategorivarmi2(secimstring,tempkategori)!=null){
-                                           System.out.println("\nGirdiğiniz kategori zaten mevcut. İşlem tamamlanamadı !");
-                                       }else{
-                                        KategoriEkle(secimstring,tempkategori);
-                                           System.out.println("\nEkleme işlemi başarı ile tamamlandı.");
-                                       }
-                                                      }
-                               else if (secimint == 2) {
-                                   System.out.print("Silmek istediğiniz kategorinin ismini giriniz : ");
-                                   secimstring=scan.nextLine();
-                                   if(kategorivarmi2(secimstring,tempkategori)==null){
-                                       System.out.println("\nGirdiğiniz kategori mevcut değil. İşlem tamamlanamadı !");
-                                   }else{
-                                       KategoriSil(kategorivarmi2(secimstring,tempkategori));
-                                       System.out.println("\nSilme işlemi başarı ile tamamlandı.");
-                                   }
-                               }else if(secimint==3 )
-                               break;
-                               else
-                                   System.out.println("\nGeçersiz bir giriş. Tekrar deneyin");
-                           }
-                           break;
-                       }
+                    while (true) {
+                        System.out.println("\nSecilen kategorinin altına yeni kategori eklemek için : 1");
+                        System.out.println("Secilen kategorinin altından    kategori silmek  için : 2");
+                        System.out.println("                                     Geri gitmek için : 3");
+                        System.out.print("Lütfen bir secim yapınız : ");
+                        try {
+                            secimint = scan.nextInt();
+                        } catch (InputMismatchException e1) {
+                            scan.nextLine();
+                            continue;
+                        }
+                        scan.nextLine();
+                        if (secimint == 1) {
+                            System.out.print("Eklemek istediğiniz kategorinin ismini giriniz : ");
+                            secimstring=scan.nextLine();
+                            if(kategorivarmi2(secimstring,tempkategori)!=null){
+                                System.out.println("\nGirdiğiniz kategori zaten mevcut. İşlem tamamlanamadı !");
+                            }else{
+                                KategoriEkle(secimstring,tempkategori);
+                                System.out.println("\nEkleme işlemi başarı ile tamamlandı.");
+                            }
+                        }
+                        else if (secimint == 2) {
+                            System.out.print("Silmek istediğiniz kategorinin ismini giriniz : ");
+                            secimstring=scan.nextLine();
+                            if(kategorivarmi2(secimstring,tempkategori)==null){
+                                System.out.println("\nGirdiğiniz kategori mevcut değil. İşlem tamamlanamadı !");
+                            }else{
+                                KategoriSil(kategorivarmi2(secimstring,tempkategori));
+                                System.out.println("\nSilme işlemi başarı ile tamamlandı.");
+                            }
+                        }else if(secimint==3 )
+                            break;
+                        else
+                            System.out.println("\nGeçersiz bir giriş. Tekrar deneyin");
+                    }
+                    break;
+                }
 
-                   }
-                   else if(secimint==2){
-                   while (true){
-
-
-                       while (true) {
-                           System.out.println("\nSecilen kategorinin altına yeni kullanıcı eklemek   için  : 1");
-                           System.out.println("Bir kategorinin altından tüm kullanıcıları  silmek  için  : 2");
-                           System.out.println("Secilen kategorinin altından bir kullanıcı  silmek  için  : 3");
-                           System.out.println("Bir kullanıyı tüm kategorilerden            silmek  için  : 4");
-                           System.out.println("                                       Geri gitmek  için  : 5");
-                             System.out.print("Lütfen bir secim yapınız : ");
-                           try {
-                               secimint = scan.nextInt();
-                           } catch (InputMismatchException e1) {
-                               scan.nextLine();
-                               continue;
-                           }
-                           scan.nextLine();
-                           if (secimint == 1) {
-                               System.out.print("Hangi kategoriye ekleme yapmak istiyorsunuz? : ");
-                               secimstring=scan.nextLine();
-                               if(secimstring.equalsIgnoreCase("rezervasyon")){
-                                   if(kategorivarmi(secimstring,kategoriKOK)==null){
-                                       System.out.println("\nGirdiğiniz kategori mevcut değil. İşlem tamamlanamadı !");
-                                       continue;
-                                   }else{
-                                       tempkategori=kategorivarmi(secimstring,kategoriKOK);
-                                   }
-                               }else{
-                               System.out.print("Bu kategori hangi kategori altında aransın : ");
-                               tempkategori=kategorivarmi(secimstring,kategorivarmi(scan.nextLine(),kategoriKOK));
-                               if(tempkategori==null){
-                                   System.out.println("\nGirdiğiniz kategori mevcut değil. İşlem tamamlanamadı !");
-                                   continue;
-                               }}
-                               System.out.print("Eklemek istediğiniz kullanıcının ismini giriniz : ");
-                               secimstring=scan.nextLine();
-                               if(kullanicivarmi(secimstring,tempkategori.kullanicikok)!=null){
-                                   System.out.println("\nGirdiğiniz kullanıcı zaten mevcut. İşlem tamamlanamadı !");
-                               }else{
-                                   Kullaniciekle(secimstring,tempkategori);
-                                   System.out.println("\nEkleme işlemi başarı ile tamamlandı.");
-                               }
-                           }
-                           else if (secimint == 2) {
-                               System.out.print("Tüm kullanıcılarını silmek istediğiniz kategorinin ismini giriniz : ");
-                               secimstring=scan.nextLine();
-                               if(secimstring.equalsIgnoreCase("rezervasyon")){
-                                   if(kategorivarmi(secimstring,kategoriKOK)==null){
-                                       System.out.println("\nGirdiğiniz kategori mevcut değil. İşlem tamamlanamadı !");
-                                   }else{
-                                       tempkategori=kategorivarmi(secimstring,kategoriKOK);
-                                       KullaniciSil1(tempkategori);
-                                       System.out.println("\nSilme işlemi başarı ile tamamlandı.");
-                                   }
-                               }else{
-                               System.out.print("Bu kategori hangi kategori altında aransın : ");
-                               tempkategori=kategorivarmi(secimstring,kategorivarmi(scan.nextLine(),kategoriKOK));
-                               if(tempkategori==null){
-                                   System.out.println("\nGirdiğiniz kategori mevcut değil. İşlem tamamlanamadı !");
-                               }else{
-                                   KullaniciSil1(tempkategori);
-                                   System.out.println("\nSilme işlemi başarı ile tamamlandı.");
-                               }}
-                           }else if (secimint == 3) {
-                               System.out.print("Kullanıcı silmek istediğiniz kategorinin ismini giriniz : ");
-                               secimstring=scan.nextLine();
-                               if(secimstring.equalsIgnoreCase("rezervasyon")){
-                               if(kategorivarmi(secimstring,kategoriKOK)==null){
-                                   System.out.println("\nGirdiğiniz kategori mevcut değil. İşlem tamamlanamadı !");
-                               }else{
-                                   tempkategori=kategorivarmi(secimstring,kategoriKOK);
-                                   System.out.print("Hangi kullanıcıyı silmek istiyorsunuz :");
-                                   if(KullaniciSil3(scan.nextLine(),tempkategori)!=0)
-                                       System.out.println("\nSilme işlemi başarı ile tamamlandı.");
-                                   else
-                                       System.out.println("\nBu isimde bir kullanıcı bulunmamaktadır.");
-                               }
-                               }else{
-                                   System.out.print("Bu kategori hangi kategori altında aransın : ");
-                                   tempkategori=kategorivarmi(secimstring,kategorivarmi(scan.nextLine(),kategoriKOK));
-                                   if(tempkategori==null){
-                                       System.out.println("\nGirdiğiniz kategori mevcut değil. İşlem tamamlanamadı !");
-                                   }else{
-                                       System.out.print("Hangi kullanıcıyı silmek istiyorsunuz :");
-                                       if(KullaniciSil3(scan.nextLine(),tempkategori)!=0)
-                                           System.out.println("\nSilme işlemi başarı ile tamamlandı.");
-                                       else
-                                           System.out.println("\nBu isimde bir kullanıcı bulunmamaktadır.");
-                                   }
-
-                               }
+            }
+            else if(secimint==2){
+                while (true){
 
 
-                           }else if (secimint == 4) {
-                               System.out.print("Tüm kategorilerden silmek istediğiniz kullanıcının ismini giriniz : ");
-                               secimstring=scan.nextLine();
+                    while (true) {
+                        System.out.println("\nSecilen kategorinin altına yeni kullanıcı eklemek   için  : 1");
+                        System.out.println("Bir kategorinin altından tüm kullanıcıları  silmek  için  : 2");
+                        System.out.println("Secilen kategorinin altından bir kullanıcı  silmek  için  : 3");
+                        System.out.println("Bir kullanıyı tüm kategorilerden            silmek  için  : 4");
+                        System.out.println("                                       Geri gitmek  için  : 5");
+                        System.out.print("Lütfen bir secim yapınız : ");
+                        try {
+                            secimint = scan.nextInt();
+                        } catch (InputMismatchException e1) {
+                            scan.nextLine();
+                            continue;
+                        }
+                        scan.nextLine();
+                        if (secimint == 1) {
+                            System.out.print("Hangi kategoriye ekleme yapmak istiyorsunuz? : ");
+                            secimstring=scan.nextLine();
+                            if(secimstring.equalsIgnoreCase("rezervasyon")){
+                                if(kategorivarmi(secimstring,kategoriKOK)==null){
+                                    System.out.println("\nGirdiğiniz kategori mevcut değil. İşlem tamamlanamadı !");
+                                    continue;
+                                }else{
+                                    tempkategori=kategorivarmi(secimstring,kategoriKOK);
+                                }
+                            }else{
+                                System.out.print("Bu kategori hangi kategori altında aransın : ");
+                                tempkategori=kategorivarmi(secimstring,kategorivarmi(scan.nextLine(),kategoriKOK));
+                                if(tempkategori==null){
+                                    System.out.println("\nGirdiğiniz kategori mevcut değil. İşlem tamamlanamadı !");
+                                    continue;
+                                }}
+                            System.out.print("Eklemek istediğiniz kullanıcının ismini giriniz : ");
+                            secimstring=scan.nextLine();
+                            if(kullanicivarmi(secimstring,tempkategori.kullanicikok)!=null){
+                                System.out.println("\nGirdiğiniz kullanıcı zaten mevcut. İşlem tamamlanamadı !");
+                            }else{
+                                Kullaniciekle(secimstring,tempkategori);
+                                System.out.println("\nEkleme işlemi başarı ile tamamlandı.");
+                            }
+                        }
+                        else if (secimint == 2) {
+                            System.out.print("Tüm kullanıcılarını silmek istediğiniz kategorinin ismini giriniz : ");
+                            secimstring=scan.nextLine();
+                            if(secimstring.equalsIgnoreCase("rezervasyon")){
+                                if(kategorivarmi(secimstring,kategoriKOK)==null){
+                                    System.out.println("\nGirdiğiniz kategori mevcut değil. İşlem tamamlanamadı !");
+                                }else{
+                                    tempkategori=kategorivarmi(secimstring,kategoriKOK);
+                                    KullaniciSil1(tempkategori);
+                                    System.out.println("\nSilme işlemi başarı ile tamamlandı.");
+                                }
+                            }else{
+                                System.out.print("Bu kategori hangi kategori altında aransın : ");
+                                tempkategori=kategorivarmi(secimstring,kategorivarmi(scan.nextLine(),kategoriKOK));
+                                if(tempkategori==null){
+                                    System.out.println("\nGirdiğiniz kategori mevcut değil. İşlem tamamlanamadı !");
+                                }else{
+                                    KullaniciSil1(tempkategori);
+                                    System.out.println("\nSilme işlemi başarı ile tamamlandı.");
+                                }}
+                        }else if (secimint == 3) {
+                            System.out.print("Kullanıcı silmek istediğiniz kategorinin ismini giriniz : ");
+                            secimstring=scan.nextLine();
+                            if(secimstring.equalsIgnoreCase("rezervasyon")){
+                                if(kategorivarmi(secimstring,kategoriKOK)==null){
+                                    System.out.println("\nGirdiğiniz kategori mevcut değil. İşlem tamamlanamadı !");
+                                }else{
+                                    tempkategori=kategorivarmi(secimstring,kategoriKOK);
+                                    System.out.print("Hangi kullanıcıyı silmek istiyorsunuz :");
+                                    kontrol=0;
+                                    KullaniciSil3(scan.nextLine(),tempkategori);
+                                    if(kontrol==1){
+                                        System.out.println("\nKullanıcı başarı ile silindi");
+                                    }else{
+                                        System.out.println("\nGirdiğiniz kullanıcı bulunamadı ! ");
+                                    }
+                                }
+                            }else{
+                                System.out.print("Bu kategori hangi kategori altında aransın : ");
+                                tempkategori=kategorivarmi(secimstring,kategorivarmi(scan.nextLine(),kategoriKOK));
+                                if(tempkategori==null){
+                                    System.out.println("\nGirdiğiniz kategori mevcut değil. İşlem tamamlanamadı !");
+                                }else{
+                                    System.out.print("Hangi kullanıcıyı silmek istiyorsunuz :");
+                                    kontrol=0;
+                                    KullaniciSil3(scan.nextLine(),tempkategori);
+                                    if(kontrol==1){
+                                        System.out.println("\nKullanıcı başarı ile silindi");
+                                    }else{
+                                        System.out.println("\nGirdiğiniz kullanıcı bulunamadı ! ");
+                                    }
+                                }
 
-                               if(KullaniciSil3(secimstring,kategoriKOK)!=0)
-                                   System.out.println("\nSilme işlemi başarı ile tamamlandı.");
-                               else
-                                   System.out.println("\nBu isimde bir kullanıcı bulunmamaktadır.");
-                               }else if(secimint==5)break;
-                           else
-                           {
-                               System.out.println("\nGeçersiz bir giriş. Tekrar deneyin");
-
-                           }
-
-                           }
-                           break;
-                       }
-
-                   }
-                   else if(secimint==3){
-                   while (true){
-
-
-                       while (true) {
-                           System.out.println("\nKullanıcıya göre                  listeleme için : 1");
-                           System.out.println("Kategoriye göre kullanıcı         listeleme için : 2");
-                           System.out.println("Rezervasyon yerine göre kullanıcı listeleme için : 3");
-                           System.out.println("Kullanıcıya göre rezervasyon      listeleme için : 4");
-                           System.out.println("                               Geri gitmek  için : 5");
-                           System.out.print("Lütfen bir secim yapınız : ");
-                           try {
-                               secimint = scan.nextInt();
-                           } catch (InputMismatchException e1) {
-                               scan.nextLine();
-                               continue;
-                           }
-                           scan.nextLine();
-                           if (secimint == 1) {
-                               ArrayList<String> kategorisimleri=new ArrayList<String>(200);
-                               System.out.print("Hangi kullanıcıyı ait kategorileri listelemek istiyorsunuz :");
-                               String a=scan.nextLine();
-                               System.out.println("\nKategoriler Gösteriliyor");
-                               System.out.println("--------------------------");
-                               listele1(a,kategoriKOK,kategorisimleri);
-                               for (int i = 0; i <kategorisimleri.size() ; i++) {
-                                   System.out.println(kategorisimleri.get(i));
-
-                               }
-
-                           }
-
-                           else if (secimint == 2) {
-                               ArrayList<String> kullanicisimleri=new ArrayList<String>(200);
-                               System.out.print("Hangi kategoriye ait kullanıcıları listelemek istiyorsunuz :");
-                               secimstring=scan.nextLine();
-                               System.out.print("Bu kategori hangi kategori altında aransın : ");
-                               tempkategori=kategorivarmi(secimstring,kategorivarmi(scan.nextLine(),kategoriKOK));
-                               System.out.println("\nKullanıcılar Gösteriliyor");
-                               System.out.println("--------------------------");
-                               if(tempkategori!=null)
-                               listele2(tempkategori,kullanicisimleri);
-                               else{
-                                   System.out.println("\nBöyle bir kategori mevcut değil");
-                                   continue;
-                               }
-                               if(kullanicisimleri.size()==0){
-                                   System.out.println("\nGirdiğiniz kategorinin altında kullanıcı bulunmamaktadır.");
-                                   continue;
-                               }
-                               for (int i = 0; i <kullanicisimleri.size() ; i++) {
-                                   System.out.println(kullanicisimleri.get(i));
-                               }
-
-                           }else if (secimint == 3) {
-                               ArrayList<String> kullanicisimleri=new ArrayList<String>(200);
-                               System.out.print("Hangi yerde rezervasyon yaptırmış kullanıcıları listelemek istiyorsunuz :");
-                               String yer=scan.nextLine();
-                               System.out.println("\nKullanıcılar Gösteriliyor");
-                               System.out.println("--------------------------");
-                               listele3(kullanicisimleri,yer,kategoriKOK);
-                               if(kullanicisimleri.size()==0){
-                                   System.out.println("\nGirdiğiniz yerde kullanıcı bulunmamaktadır.");
-                                   continue;
-                               }
-                               for (int i = 0; i <kullanicisimleri.size() ; i++) {
-                                   System.out.println(kullanicisimleri.get(i));
-                               }
-
-                           }else if (secimint == 4) {
-                               ArrayList<Rezervasyon> rezervasyonlar=new ArrayList<>(200);
-                               System.out.print("Hangi kullanıcıyı ait rezervasyonları listelemek istiyorsunuz :");
-                               String kullanici=scan.nextLine();
-                               System.out.println("\nRezervasyonlar Gösteriliyor");
-                               System.out.println("-------------------------");
-                               listele4(rezervasyonlar,kullanici,kategoriKOK);
-                               for (int i = 0; i <rezervasyonlar.size() ; i++) {
-
-                                   System.out.println("Yer id = "+rezervasyonlar.get(i).yer_id);
-                                   System.out.println("Enlem  = "+rezervasyonlar.get(i).enlem);
-                                   System.out.println("Boylam = "+rezervasyonlar.get(i).boylam);
-                                   System.out.println("Sehir  = "+rezervasyonlar.get(i).sehir);
-                                   System.out.println("Son rezervasyon zamani = "+rezervasyonlar.get(i).rezervasyon_zamani);
-                                   System.out.println("-------------------------");
-                               }
-
-                           }else if(secimint==5)break;
-                           else
-                           {
-                               System.out.println("\nGeçersiz bir giriş. Tekrar deneyin");
-
-                           }
-
-                       }
-                       break;
-                   }
-
-               }else if(secimint==4)
-                       break;
-                   else
-                       System.out.println("\nGeçersiz bir giriş. Tekrar deneyin");
+                            }
 
 
-               }
+                        }else if (secimint == 4) {
+                            System.out.print("Tüm kategorilerden silmek istediğiniz kullanıcının ismini giriniz : ");
+                            secimstring=scan.nextLine();
+                            kontrol=0;
+                            KullaniciSil3(secimstring,kategoriKOK);
+                            if(kontrol==1){
+                                System.out.println("\nKullanıcı başarı ile silindi");
+                            }else{
+                                System.out.println("\nGirdiğiniz kullanıcı bulunamadı ! ");
+                            }
+
+                        }else if(secimint==5)break;
+                        else
+                        {
+                            System.out.println("\nGeçersiz bir giriş. Tekrar deneyin");
+
+                        }
+
+                    }
+                    break;
+                }
+
+            }
+            else if(secimint==3){
+                while (true){
+
+
+                    while (true) {
+                        System.out.println("\nKullanıcıya göre                  listeleme için : 1");
+                        System.out.println("Kategoriye göre kullanıcı         listeleme için : 2");
+                        System.out.println("Rezervasyon yerine göre kullanıcı listeleme için : 3");
+                        System.out.println("Kullanıcıya göre rezervasyon      listeleme için : 4");
+                        System.out.println("                               Geri gitmek  için : 5");
+                        System.out.print("Lütfen bir secim yapınız : ");
+                        try {
+                            secimint = scan.nextInt();
+                        } catch (InputMismatchException e1) {
+                            scan.nextLine();
+                            continue;
+                        }
+                        scan.nextLine();
+                        if (secimint == 1) {
+                            ArrayList<String> kategorisimleri=new ArrayList<String>(200);
+                            System.out.print("Hangi kullanıcıyı ait kategorileri listelemek istiyorsunuz :");
+                            String a=scan.nextLine();
+                            System.out.println("\nKategoriler Gösteriliyor");
+                            System.out.println("--------------------------");
+                            listele1(a,kategoriKOK,kategorisimleri);
+                            for (int i = 0; i <kategorisimleri.size() ; i++) {
+                                System.out.println(kategorisimleri.get(i));
+
+                            }
+
+                        }
+
+                        else if (secimint == 2) {
+                            ArrayList<String> kullanicisimleri=new ArrayList<String>(200);
+                            System.out.print("Hangi kategoriye ait kullanıcıları listelemek istiyorsunuz :");
+                            secimstring=scan.nextLine();
+                            System.out.print("Bu kategori hangi kategori altında aransın : ");
+                            tempkategori=kategorivarmi(secimstring,kategorivarmi(scan.nextLine(),kategoriKOK));
+                            System.out.println("\nKullanıcılar Gösteriliyor");
+                            System.out.println("--------------------------");
+                            if(tempkategori!=null)
+                                listele2(tempkategori,kullanicisimleri);
+                            else{
+                                System.out.println("\nBöyle bir kategori mevcut değil");
+                                continue;
+                            }
+                            if(kullanicisimleri.size()==0){
+                                System.out.println("\nGirdiğiniz kategorinin altında kullanıcı bulunmamaktadır.");
+                                continue;
+                            }
+                            for (int i = 0; i <kullanicisimleri.size() ; i++) {
+                                System.out.println(kullanicisimleri.get(i));
+                            }
+
+                        }else if (secimint == 3) {
+                            ArrayList<String> kullanicisimleri=new ArrayList<String>(200);
+                            System.out.print("Hangi yerde rezervasyon yaptırmış kullanıcıları listelemek istiyorsunuz :");
+                            String yer=scan.nextLine();
+                            System.out.println("\nKullanıcılar Gösteriliyor");
+                            System.out.println("--------------------------");
+                            listele3(kullanicisimleri,yer,kategoriKOK);
+                            if(kullanicisimleri.size()==0){
+                                System.out.println("\nGirdiğiniz yerde kullanıcı bulunmamaktadır.");
+                                continue;
+                            }
+                            for (int i = 0; i <kullanicisimleri.size() ; i++) {
+                                System.out.println(kullanicisimleri.get(i));
+                            }
+
+                        }else if (secimint == 4) {
+                            ArrayList<Rezervasyon> rezervasyonlar=new ArrayList<>(200);
+                            System.out.print("Hangi kullanıcıyı ait rezervasyonları listelemek istiyorsunuz :");
+                            String kullanici=scan.nextLine();
+                            System.out.println("\nRezervasyonlar Gösteriliyor");
+                            System.out.println("-------------------------");
+                            listele4(rezervasyonlar,kullanici,kategoriKOK);
+                            for (int i = 0; i <rezervasyonlar.size() ; i++) {
+
+                                System.out.println("Yer id = "+rezervasyonlar.get(i).yer_id);
+                                System.out.println("Enlem  = "+rezervasyonlar.get(i).enlem);
+                                System.out.println("Boylam = "+rezervasyonlar.get(i).boylam);
+                                System.out.println("Sehir  = "+rezervasyonlar.get(i).sehir);
+                                System.out.println("Son rezervasyon zamani = "+rezervasyonlar.get(i).rezervasyon_zamani);
+                                System.out.println("-------------------------");
+                            }
+
+                        }else if(secimint==5)break;
+                        else
+                        {
+                            System.out.println("\nGeçersiz bir giriş. Tekrar deneyin");
+
+                        }
+
+                    }
+                    break;
+                }
+
+            }else if(secimint==4)
+                break;
+            else
+                System.out.println("\nGeçersiz bir giriş. Tekrar deneyin");
+
+
+        }
         System.out.println("\n\n******************");
 
 
@@ -395,8 +404,8 @@ public class Main {
 
         while(temp!=null){
 
-        rezervasyonekle(rezervasyonlar,temp);
-        temp=temp.sonraki;
+            rezervasyonekle(rezervasyonlar,temp);
+            temp=temp.sonraki;
         }
 
     }
@@ -406,13 +415,13 @@ public class Main {
 
             if(rezervasyonlar.get(i).yer_id.equals(rezervasyon.yer_id)){
 
-               if(rezervasyonzamankarsilastir(rezervasyonlar.get(i).rezervasyon_zamani,rezervasyon.rezervasyon_zamani)){
-                   rezervasyonlar.remove(i);
-                   rezervasyonlar.add(rezervasyon);
-                   return;
+                if(rezervasyonzamankarsilastir(rezervasyonlar.get(i).rezervasyon_zamani,rezervasyon.rezervasyon_zamani)){
+                    rezervasyonlar.remove(i);
+                    rezervasyonlar.add(rezervasyon);
+                    return;
 
-               }else
-                   return;
+                }else
+                    return;
 
             }
         }
@@ -451,7 +460,7 @@ public class Main {
 
         }
 
-return false;
+        return false;
     }
 
     private static void listele3(ArrayList<String> kullanicisimleri, String yer, Kategori temp) {
@@ -497,7 +506,7 @@ return false;
                 if(temp.alt.get(i).kullanicikok!=null)
                 {
 
-                   listele22(temp.alt.get(i),kullanicisimleri);
+                    listele22(temp.alt.get(i),kullanicisimleri);
 
                 }
 
@@ -517,22 +526,22 @@ return false;
 
 
 
-            if(temp.kullanicikok!=null) {
+        if(temp.kullanicikok!=null) {
 
-                kullaniciAlistekle(kullanicisimleri,temp.kullanicikok);
+            kullaniciAlistekle(kullanicisimleri,temp.kullanicikok);
 
-            }
+        }
 
         if(temp.alt.size()!=0){
 
             for (int i = 0; i <temp.alt.size() ; i++) {
 
 
-                    if(temp.alt.get(i).kullanicikok!=null)
-                    {
-                        kullaniciAlistekle(kullanicisimleri,temp.alt.get(i).kullanicikok);
+                if(temp.alt.get(i).kullanicikok!=null)
+                {
+                    kullaniciAlistekle(kullanicisimleri,temp.alt.get(i).kullanicikok);
 
-                    }
+                }
 
 
                 listele22(temp.alt.get(i),kullanicisimleri);
@@ -549,11 +558,11 @@ return false;
         int kontrol=0;
 
         if(kullanicivarmi(secimstring,temp.kullanicikok)!=null){
-           if(!(kategorisimleri.contains(temp.kategori_ismi))) {
+            if(!(kategorisimleri.contains(temp.kategori_ismi))) {
 
-               kategorisimleri.add(temp.kategori_ismi);
+                kategorisimleri.add(temp.kategori_ismi);
 
-           }
+            }
 
         }
         if(temp.alt.size()!=0){
@@ -578,13 +587,13 @@ return false;
     }
 
 
-    private static int KullaniciSil3(String secimstring,Kategori temp) {
+    private static void KullaniciSil3(String secimstring,Kategori temp) {
 
-       Kullanici temp3;int kontrol=0;
+        Kullanici temp3;
         if(kullanicivarmi(secimstring,temp.kullanicikok)!=null){
             temp3=kullanicivarmi(secimstring,temp.kullanicikok);
             KullaniciSil2(temp3,temp);
-            kontrol++;
+            kontrol=1;
         }
         if(temp.alt.size()!=0){
             for (int i = 0; i <temp.alt.size() ; i++) {
@@ -593,7 +602,7 @@ return false;
                 {
                     temp3=kullanicivarmi(secimstring,temp.alt.get(i).kullanicikok);
                     KullaniciSil2(temp3,temp.alt.get(i));
-                   kontrol++;
+                    kontrol=1;
                 }
 
                 KullaniciSil3(secimstring,temp.alt.get(i));
@@ -603,7 +612,7 @@ return false;
 
         }
 
-        return kontrol;
+
 
 
     }
@@ -626,7 +635,7 @@ return false;
 
 
 
-                    Kullanicisil(temp.alt.get(i));
+                Kullanicisil(temp.alt.get(i));
 
 
             }
@@ -644,11 +653,11 @@ return false;
         }
 
 
-       tempkategori.rezervasyon_sayisi=0;
-       tempkategori.kullanici_sayisi=0;
-       tempkategori.kullanicikok=null;
+        tempkategori.rezervasyon_sayisi=0;
+        tempkategori.kullanici_sayisi=0;
+        tempkategori.kullanicikok=null;
 
-       Kullanicisil(tempkategori);
+        Kullanicisil(tempkategori);
 
     }
     private static void KullaniciSil2(Kullanici tempkullanici,Kategori tempkategori) {
@@ -664,160 +673,160 @@ return false;
         }
 
 
-    if(tempkullanici.ust==null){
+        if(tempkullanici.ust==null){
 
-        if(tempkullanici.sag==null&&tempkullanici.sol==null){
+            if(tempkullanici.sag==null&&tempkullanici.sol==null){
 
-           tempkullanici.kok.kullanicikok=null;
-            return;
+                tempkullanici.kok.kullanicikok=null;
+                return;
 
-        }else if(tempkullanici.sag==null){
+            }else if(tempkullanici.sag==null){
 
-           tempkullanici.kok.kullanicikok=tempkullanici.sol;
-            return;
-        }else if(tempkullanici.sol==null){
+                tempkullanici.kok.kullanicikok=tempkullanici.sol;
+                return;
+            }else if(tempkullanici.sol==null){
 
-            tempkullanici.kok.kullanicikok=tempkullanici.sag;
-            return;
+                tempkullanici.kok.kullanicikok=tempkullanici.sag;
+                return;
 
-
-        }
-
-
-
-
-        if(tempkullanici.sag.rezervasyon_sayisi>tempkullanici.sol.rezervasyon_sayisi)
-        {
-            tempkullanici.sag.ust=null;
-            tempkullanici.kok.kullanicikok=tempkullanici.sag;
-            temp=tempkullanici.sol;
-            tempkullanici=tempkullanici.kok.kullanicikok;
-            if(tempkullanici.sol!=null)
-            tempkullanici.derinlik-=tempkullanici.sol.derinlik;
-            temp2=tempkullanici.sol;
-            tempkullanici.sol=temp;
-        }
-        else
-        {
-            tempkullanici.sol.ust=null;
-            tempkullanici.kok.kullanicikok=tempkullanici.sol;
-            temp=tempkullanici.sag;
-            tempkullanici=tempkullanici.kok.kullanicikok;
-            if(tempkullanici.sag!=null)
-            tempkullanici.derinlik-=tempkullanici.sag.derinlik;
-            temp2=tempkullanici.sag;
-            tempkullanici.sag=temp;
-        }
-
-        tempkullanici.derinlik+=temp.derinlik;
-
-        if(temp2!=null) {
-            temp3 = new Kullanici(temp2);
-            yenikullanici_ekle(temp3, tempkategori.kullanicikok);
-
-            kullaniciguncelle(temp3);
-            Kullanicidugumunekle(tempkategori.kullanicikok, temp2);
-        }
-
-
-    }else{
-
-        if(tempkullanici.sag==null&&tempkullanici.sol==null){
-
-            if(tempkullanici.ust.sag==tempkullanici){
-                tempkullanici.ust.sag=null;
-
-            }else{
-                tempkullanici.ust.sol=null;
 
             }
-            return;
 
-        }else if(tempkullanici.sag==null){
 
-            if(tempkullanici.ust.sag==tempkullanici){
-                tempkullanici.ust.sag=tempkullanici.sol;
-                tempkullanici.sol.ust=tempkullanici.ust;
 
-            }else{
-                tempkullanici.ust.sol=tempkullanici.sol;
-                tempkullanici.sol.ust=tempkullanici.ust;
 
-            }
-            return;
-        }else if(tempkullanici.sol==null){
-
-            if(tempkullanici.ust.sag==tempkullanici){
-                tempkullanici.ust.sag=tempkullanici.sag;
-                tempkullanici.sag.ust=tempkullanici.ust;
-
-            }else{
-                tempkullanici.ust.sol=tempkullanici.sag;
-                tempkullanici.sag.ust=tempkullanici.ust;
-
-            }
-            return;
-
-        }
-
-        if(tempkullanici.sag.rezervasyon_sayisi>tempkullanici.sol.rezervasyon_sayisi)
-        {
-            tempkullanici.sag.ust=tempkullanici.ust;
-
-            if(tempkullanici.ust.sag==tempkullanici)
+            if(tempkullanici.sag.rezervasyon_sayisi>tempkullanici.sol.rezervasyon_sayisi)
             {
-                tempkullanici.ust.sag=tempkullanici.sag;
+                tempkullanici.sag.ust=null;
+                tempkullanici.kok.kullanicikok=tempkullanici.sag;
                 temp=tempkullanici.sol;
-                tempkullanici= tempkullanici.ust.sag;
+                tempkullanici=tempkullanici.kok.kullanicikok;
+                if(tempkullanici.sol!=null)
+                    tempkullanici.derinlik-=tempkullanici.sol.derinlik;
+                temp2=tempkullanici.sol;
+                tempkullanici.sol=temp;
             }
             else
             {
-                tempkullanici.ust.sol=tempkullanici.sag;
-                temp=tempkullanici.sol;
-                tempkullanici=tempkullanici.ust.sol;
+                tempkullanici.sol.ust=null;
+                tempkullanici.kok.kullanicikok=tempkullanici.sol;
+                temp=tempkullanici.sag;
+                tempkullanici=tempkullanici.kok.kullanicikok;
+                if(tempkullanici.sag!=null)
+                    tempkullanici.derinlik-=tempkullanici.sag.derinlik;
+                temp2=tempkullanici.sag;
+                tempkullanici.sag=temp;
             }
 
-            if(tempkullanici.sol!=null)
-            tempkullanici.derinlik-=tempkullanici.sol.derinlik;
-            temp2=tempkullanici.sol;
-            tempkullanici.sol=temp;
-        }
-        else
-        {
-            tempkullanici.sol.ust=tempkullanici.ust;
+            tempkullanici.derinlik+=temp.derinlik;
 
-            if(tempkullanici.ust.sag==tempkullanici)
+            if(temp2!=null) {
+                temp3 = new Kullanici(temp2);
+                yenikullanici_ekle(temp3, tempkategori.kullanicikok);
+
+                kullaniciguncelle(temp3);
+                Kullanicidugumunekle(tempkategori.kullanicikok, temp2);
+            }
+
+
+        }else{
+
+            if(tempkullanici.sag==null&&tempkullanici.sol==null){
+
+                if(tempkullanici.ust.sag==tempkullanici){
+                    tempkullanici.ust.sag=null;
+
+                }else{
+                    tempkullanici.ust.sol=null;
+
+                }
+                return;
+
+            }else if(tempkullanici.sag==null){
+
+                if(tempkullanici.ust.sag==tempkullanici){
+                    tempkullanici.ust.sag=tempkullanici.sol;
+                    tempkullanici.sol.ust=tempkullanici.ust;
+
+                }else{
+                    tempkullanici.ust.sol=tempkullanici.sol;
+                    tempkullanici.sol.ust=tempkullanici.ust;
+
+                }
+                return;
+            }else if(tempkullanici.sol==null){
+
+                if(tempkullanici.ust.sag==tempkullanici){
+                    tempkullanici.ust.sag=tempkullanici.sag;
+                    tempkullanici.sag.ust=tempkullanici.ust;
+
+                }else{
+                    tempkullanici.ust.sol=tempkullanici.sag;
+                    tempkullanici.sag.ust=tempkullanici.ust;
+
+                }
+                return;
+
+            }
+
+            if(tempkullanici.sag.rezervasyon_sayisi>tempkullanici.sol.rezervasyon_sayisi)
             {
-                tempkullanici.ust.sag=tempkullanici.sol;
-                temp=tempkullanici.sag;
-                tempkullanici= tempkullanici.ust.sag;
+                tempkullanici.sag.ust=tempkullanici.ust;
+
+                if(tempkullanici.ust.sag==tempkullanici)
+                {
+                    tempkullanici.ust.sag=tempkullanici.sag;
+                    temp=tempkullanici.sol;
+                    tempkullanici= tempkullanici.ust.sag;
+                }
+                else
+                {
+                    tempkullanici.ust.sol=tempkullanici.sag;
+                    temp=tempkullanici.sol;
+                    tempkullanici=tempkullanici.ust.sol;
+                }
+
+                if(tempkullanici.sol!=null)
+                    tempkullanici.derinlik-=tempkullanici.sol.derinlik;
+                temp2=tempkullanici.sol;
+                tempkullanici.sol=temp;
             }
             else
             {
-                tempkullanici.ust.sol=tempkullanici.sol;
-                temp=tempkullanici.sag;
-                tempkullanici=tempkullanici.ust.sol;
+                tempkullanici.sol.ust=tempkullanici.ust;
+
+                if(tempkullanici.ust.sag==tempkullanici)
+                {
+                    tempkullanici.ust.sag=tempkullanici.sol;
+                    temp=tempkullanici.sag;
+                    tempkullanici= tempkullanici.ust.sag;
+                }
+                else
+                {
+                    tempkullanici.ust.sol=tempkullanici.sol;
+                    temp=tempkullanici.sag;
+                    tempkullanici=tempkullanici.ust.sol;
+                }
+
+                if(tempkullanici.sag!=null)
+                    tempkullanici.derinlik-=tempkullanici.sag.derinlik;
+                temp2=tempkullanici.sag;
+                tempkullanici.sag=temp;
             }
 
-            if(tempkullanici.sag!=null)
-            tempkullanici.derinlik-=tempkullanici.sag.derinlik;
-            temp2=tempkullanici.sag;
-            tempkullanici.sag=temp;
-        }
+            tempkullanici.derinlik+=temp.derinlik;
 
-        tempkullanici.derinlik+=temp.derinlik;
+            if(temp2!=null) {
+                temp3 = new Kullanici(temp2);
 
-        if(temp2!=null) {
-            temp3 = new Kullanici(temp2);
+                yenikullanici_ekle(temp3, tempkategori.kullanicikok);
+                kullaniciguncelle(temp3);
 
-            yenikullanici_ekle(temp3, tempkategori.kullanicikok);
-            kullaniciguncelle(temp3);
+                Kullanicidugumunekle(tempkategori.kullanicikok, temp2);
 
-            Kullanicidugumunekle(tempkategori.kullanicikok, temp2);
+            }
 
         }
-
-    }
 
     }
     private static void Kullanicidugumunekle(Kullanici kok,Kullanici dugum){
@@ -856,14 +865,14 @@ return false;
         tempkategori.ust.alt.addAll(tempkategori.alt);
         tempkategori.ust.alt_kategori_sayisi+=(tempkategori.alt_kategori_sayisi-1);
 
-            while(temp!=null)
-            {
-                for (int i = 0; i <tempkategori.alt.size(); i++) {
+        while(temp!=null)
+        {
+            for (int i = 0; i <tempkategori.alt.size(); i++) {
                 temp.rezervasyon_sayisi+=tempkategori.alt.get(i).rezervasyon_sayisi;
 
-                }
-                temp=temp.ust;
             }
+            temp=temp.ust;
+        }
 
         temp=tempkategori.ust;
         while(temp!=null)
@@ -921,46 +930,46 @@ return false;
                     "Rastgele atamak için : 2 \nLütfen bir secim yapınız: ");
 
             int secimint=scan.nextInt();
-        if(secimint==1){
+            if(secimint==1){
 
-            for (int i = 0; i <rezervasyon_sayisi ; i++) {
-                System.out.println("-------"+(i+1)+".rezervasyon--------------");
-                System.out.println("Sehir  : ");
-                sehir=scan.nextLine();
-                System.out.println("Yer id : ");
-                yerid=scan.nextLine();
-                System.out.println("Zaman (yil-ay-gunTsaat:dakika:saniye) : ");
-                zaman=scan.nextLine();
-                System.out.println("Enlem : ");
-                enlem=scan.nextLine();
-                System.out.println("Boylam : ");
-                boylam=scan.nextLine();
-                rezervasyon_bagla(kullanicisim,kok,yerid,zaman,enlem,boylam,sehir);
-                rezsayiarttir(kok);
-            }
-        }else if(secimint==2){
-            for (int i = 0; i <rezervasyon_sayisi ; i++) {
+                for (int i = 0; i <rezervasyon_sayisi ; i++) {
+                    System.out.println("-------"+(i+1)+".rezervasyon--------------");
+                    System.out.println("Sehir  : ");
+                    sehir=scan.nextLine();
+                    System.out.println("Yer id : ");
+                    yerid=scan.nextLine();
+                    System.out.println("Zaman (yil-ay-gunTsaat:dakika:saniye) : ");
+                    zaman=scan.nextLine();
+                    System.out.println("Enlem : ");
+                    enlem=scan.nextLine();
+                    System.out.println("Boylam : ");
+                    boylam=scan.nextLine();
+                    rezervasyon_bagla(kullanicisim,kok,yerid,zaman,enlem,boylam,sehir);
+                    rezsayiarttir(kok);
+                }
+            }else if(secimint==2){
+                for (int i = 0; i <rezervasyon_sayisi ; i++) {
 
-                sehir="Sehir"+(rand.nextInt(rezervasyon_sayisi)+1);
-                yerid="Yer"+(rand.nextInt(rezervasyon_sayisi)+1);
-                zaman=""+(2015+rand.nextInt(3))+"-"+(rand.nextInt(12)+1)+"-"+(rand.nextInt(30)+1)+"T"+(rand.nextInt(24)+1)+":"+(rand.nextInt(60)+1)+":"+(rand.nextInt(60)+1);
-                enlem=""+rand.nextInt(1000)+1;
-                boylam=""+rand.nextInt(1000)+1;
-                rezervasyon_bagla(kullanicisim,kok,yerid,zaman,enlem,boylam,sehir);
-                rezsayiarttir(kok);
+                    sehir="Sehir"+(rand.nextInt(rezervasyon_sayisi)+1);
+                    yerid="Yer"+(rand.nextInt(rezervasyon_sayisi)+1);
+                    zaman=""+(2015+rand.nextInt(3))+"-"+(rand.nextInt(12)+1)+"-"+(rand.nextInt(30)+1)+"T"+(rand.nextInt(24)+1)+":"+(rand.nextInt(60)+1)+":"+(rand.nextInt(60)+1);
+                    enlem=""+rand.nextInt(1000)+1;
+                    boylam=""+rand.nextInt(1000)+1;
+                    rezervasyon_bagla(kullanicisim,kok,yerid,zaman,enlem,boylam,sehir);
+                    rezsayiarttir(kok);
+
+                }
+            }else
+                System.out.println("\nGeçersiz bir deger girdiniz. Tekrar giriniz ");
+            break;
 
         }
-        }else
-            System.out.println("\nGeçersiz bir deger girdiniz. Tekrar giriniz ");
-        break;
-
-        }
 
 
 
 
-            yenikullanici.rezervasyon_sayisi=rezervasyon_sayisi;
-            kullaniciguncelle(yenikullanici);
+        yenikullanici.rezervasyon_sayisi=rezervasyon_sayisi;
+        kullaniciguncelle(yenikullanici);
 
     }
 
@@ -1045,7 +1054,7 @@ return false;
                 }
                 if(k==4){
 
-                   boylam=temp.trim();
+                    boylam=temp.trim();
                 }
                 if(k==5){
 
@@ -1064,7 +1073,7 @@ return false;
 
         Kategori tempkategori=null;
         ArrayList<String> kategoriler=new ArrayList<String>();
-         temp="";
+        temp="";
         Kategori aranacak_kok= kategoriKOK;
         for (int i = 0; i <kategori.length() ; i++) {
             if(kategori.charAt(i)==':'){
@@ -1089,8 +1098,8 @@ return false;
 
     public static void rezervasyon_bagla(String isim,Kategori kategori,String yerid, String rezervasyonzamani, String enlem, String boylam, String sehir){
         Rezervasyon yenirezervasyon=new Rezervasyon();
-        yenirezervasyon.boylam=Double.parseDouble(boylam);
-        yenirezervasyon.enlem=Double.parseDouble(enlem);
+        yenirezervasyon.boylam=boylam;
+        yenirezervasyon.enlem=enlem;
         yenirezervasyon.rezervasyon_zamani=rezervasyonzamani;
         yenirezervasyon.sehir=sehir;
         yenirezervasyon.yer_id=yerid;
@@ -1110,18 +1119,18 @@ return false;
 
 
 
-    while (true){
+        while (true){
 
 
 
-       if(rezervasyon_kok.sonraki==null){
-           rezervasyon_kok.sonraki=yenirezervasyon;
-           yenirezervasyon.onceki=rezervasyon_kok;
-           break;
-       }
+            if(rezervasyon_kok.sonraki==null){
+                rezervasyon_kok.sonraki=yenirezervasyon;
+                yenirezervasyon.onceki=rezervasyon_kok;
+                break;
+            }
 
-        rezervasyon_kok=rezervasyon_kok.sonraki;
-    }
+            rezervasyon_kok=rezervasyon_kok.sonraki;
+        }
 
     }
 
@@ -1165,7 +1174,7 @@ return false;
 
             if(satir.charAt(i)==','){
 
-                    temp="";
+                temp="";
                 continue;
             }
 
@@ -1246,14 +1255,14 @@ return false;
         }
         while(true){
 
-    if(kullanici.rezervasyon_sayisi>karsilastirma.rezervasyon_sayisi){
+            if(kullanici.rezervasyon_sayisi>karsilastirma.rezervasyon_sayisi){
 
-       kullaniciyerdegistir(kullanici,karsilastirma);
-        kullanici=karsilastirma;
-        }
-        karsilastirma=karsilastirma.ust;
+                kullaniciyerdegistir(kullanici,karsilastirma);
+                kullanici=karsilastirma;
+            }
+            karsilastirma=karsilastirma.ust;
 
-    if(karsilastirma==null)break;
+            if(karsilastirma==null)break;
         }
     }
 
@@ -1274,35 +1283,35 @@ return false;
 
 
 
-            if(yenikullanici.ust!=null)return ;
+        if(yenikullanici.ust!=null)return ;
 
 
-            if(kok.sag==null){
+        if(kok.sag==null){
 
-                yenikullanici.ust=kok;
-                kok.sag=yenikullanici;
-                while(kok!=null){
-                    kok.derinlik++;
-                    kok=kok.ust;
-                }
-                return ;
-            }else if(kok.sol==null){
-
-                yenikullanici.ust=kok;
-                kok.sol=yenikullanici;
-                while(kok!=null){
-                    kok.derinlik++;
-                    kok=kok.ust;
-                }
-                return ;
+            yenikullanici.ust=kok;
+            kok.sag=yenikullanici;
+            while(kok!=null){
+                kok.derinlik++;
+                kok=kok.ust;
             }
+            return ;
+        }else if(kok.sol==null){
 
-            if( kok.sag.derinlik<kok.sol.derinlik)
-                yenikullanici_ekle(yenikullanici,kok.sag);
-            else
-                yenikullanici_ekle(yenikullanici,kok.sol);
-
+            yenikullanici.ust=kok;
+            kok.sol=yenikullanici;
+            while(kok!=null){
+                kok.derinlik++;
+                kok=kok.ust;
             }
+            return ;
+        }
+
+        if( kok.sag.derinlik<kok.sol.derinlik)
+            yenikullanici_ekle(yenikullanici,kok.sag);
+        else
+            yenikullanici_ekle(yenikullanici,kok.sol);
+
+    }
 
 
 
@@ -1328,7 +1337,7 @@ return false;
 
 
         if(kok.sag!=null){
-        if(kok.sag.kullanici_adi.equalsIgnoreCase(kullanici))return kok.sag;
+            if(kok.sag.kullanici_adi.equalsIgnoreCase(kullanici))return kok.sag;
             temp=kullanicivarmi(kullanici,kok.sag);
             if(temp!=null)return temp;
 
@@ -1488,11 +1497,11 @@ return false;
     }
     public static Kategori kategorivarmi2(String kategori,Kategori temp){
 
-            for (int i = 0; i <temp.alt.size() ; i++) {
+        for (int i = 0; i <temp.alt.size() ; i++) {
 
-                if(temp.alt.get(i).kategori_ismi.equalsIgnoreCase(kategori))
-                    return temp.alt.get(i);
-            }
+            if(temp.alt.get(i).kategori_ismi.equalsIgnoreCase(kategori))
+                return temp.alt.get(i);
+        }
 
 
         return null;

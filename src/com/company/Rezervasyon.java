@@ -6,8 +6,8 @@ public class Rezervasyon {
     public Rezervasyon onceki;
     public String yer_id;
     public String rezervasyon_zamani;
-    public double enlem;
-    public double boylam;
+    public String enlem;
+    public String boylam;
     public String sehir;
 
 }
